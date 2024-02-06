@@ -9,25 +9,8 @@ lazy val root = project
     scalaVersion := scala3Version,
 
     libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
-    libraryDependencies += "dev.scalapy" %% "scalapy-core" % "0.5.3",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4"
+    libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
+    libraryDependencies += "com.softwaremill.sttp.client4" %% "core" % "4.0.0-M1",
+    libraryDependencies += "com.lihaoyi" %% "upickle" % "3.1.3",
+    libraryDependencies += "com.github.nscala-time" %% "nscala-time" % "2.32.0"
   )
-  
-fork := true
-
-import scala.sys.process._
-lazy val pythonLdFlags = {
-  val withoutEmbed = "python3-config --ldflags".!!
-  if (withoutEmbed.contains("-lpython")) {
-    withoutEmbed.split(' ').map(_.trim).filter(_.nonEmpty).toSeq
-  } else {
-    val withEmbed = "python3-config --ldflags --embed".!!
-    withEmbed.split(' ').map(_.trim).filter(_.nonEmpty).toSeq
-  }
-}
-
-lazy val pythonLibsDir = {
-  pythonLdFlags.find(_.startsWith("-L")).get.drop("-L".length)
-}
-
-javaOptions += s"-Djna.library.path=$pythonLibsDir"
